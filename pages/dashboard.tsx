@@ -10,6 +10,8 @@ import {
   VictoryBar,
   VictoryVoronoiContainer,
   Line,
+  Curve,
+  VictoryTooltip,
 } from 'victory';
 import Layout from '../components/layout';
 import ScatterPlot from '../components/scatterplot';
@@ -39,7 +41,7 @@ const Home: NextPage = () => {
   let statsBg = useColorModeValue('gray.300', 'gray.600');
   let axisLabelColor = useColorModeValue('gray', 'white');
 
-  const sidebarItems = [
+  const topGainers = [
     {
       title: 'Calico Ship',
       image: '/ship-1.png',
@@ -66,6 +68,43 @@ const Home: NextPage = () => {
       image: '/ship-4.png',
       link: '/item/6143e0ac92761eeee4bc18f4',
       price: 14.3,
+    },
+  ];
+
+  const topLosers = [
+    {
+      title: 'Om Photoli',
+      image: '/om-photoli.png',
+      link: '/item/6083562f1b5bc51379ab9e20',
+      price: 5.23,
+    },
+
+    {
+      title: 'The Last Stand',
+      image: '/the-last-stand.jpeg',
+      link: '/item/6083562f1b5bc51379ab9e1c',
+      price: 13.63,
+    },
+
+    {
+      title: 'Unique Badge',
+      image: '/unique-badge.png',
+      link: '/item/612e7223fee257a97be35350',
+      price: 6.98,
+    },
+
+    {
+      title: 'Power Plant',
+      image: '/power-plant.jpeg',
+      link: '/item/612e7223fee257a97be3531f',
+      price: 5.23,
+    },
+
+    {
+      title: 'Tigu',
+      image: '/tigu.jpeg',
+      link: '/item/612e7223fee257a97be35326',
+      price: 15.62,
     },
   ];
   return (
@@ -278,7 +317,7 @@ const Home: NextPage = () => {
               Top Gainers (24h)
             </Heading>
 
-            {sidebarItems.map((el) => {
+            {topGainers.map((el) => {
               return (
                 <Box
                   key={el.title}
@@ -317,10 +356,10 @@ const Home: NextPage = () => {
             })}
 
             <Heading fontSize={'lg'} p={5} borderBottomWidth={1}>
-              Hot Inventory Items 🔥
+              Top Losers (24h)
             </Heading>
 
-            {sidebarItems.map((el) => {
+            {topLosers.map((el) => {
               return (
                 <Box
                   key={el.title + '2'}
@@ -342,7 +381,7 @@ const Home: NextPage = () => {
                           <Heading size="sm">{el.title}</Heading>
 
                           <Box color="gray.500" fontSize="sm">
-                            Ship • {el.price} USDC
+                            Coll • {el.price} USDC
                           </Box>
                         </Box>
                       </Box>
@@ -374,18 +413,18 @@ interface ChartData {
 }
 
 const sampleUserData = [
-  { x: 'Nov', y: 4000,  },
+  { x: 'Nov', y: 4000 },
   { x: 'Dec', y: 4000 },
-  { x: 'Jan', y: 5000 },
-  { x: 'Feb', y: 3500 },
-  { x: 'Mar', y: 3000 },
-  { x: 'Apr', y: 5000 },
-  { x: 'May', y: 5600 },
-  { x: 'Jun', y: 6000 },
-  { x: 'Jul', y: 7000 },
-  { x: 'Aug', y: 6550 },
-  { x: 'Sep', y: 7000 },
-  { x: 'Oct', y: 8000 },
+  { x: 'Jan', y: 4100 },
+  { x: 'Feb', y: 4200 },
+  { x: 'Mar', y: 4000 },
+  { x: 'Apr', y: 4200 },
+  { x: 'May', y: 4300 },
+  { x: 'Jun', y: 4000 },
+  { x: 'Jul', y: 3800 },
+  { x: 'Aug', y: 3600 },
+  { x: 'Sep', y: 3700 },
+  { x: 'Oct', y: 4000 },
 ];
 const sampleUserData2 = sampleUserData.map((thing) => ({
   x: thing.x,
@@ -402,14 +441,23 @@ function MonthlyBalanceChart({ areaColor, axisLabelColor }: ChartData) {
       <VictoryChart
         height={250}
         animate={{ duration: 400, easing: 'bounceIn' }}
-        containerComponent={<VictoryVoronoiContainer labels={({ datum }) => `${datum.y}`} />}
+        containerComponent={<VictoryVoronoiContainer />}
       >
         <VictoryBar
           data={sampleUserData}
           style={{
             data: { fill: '#7956DD' },
-            labels: { fill: '#7956DD' },
           }}
+          labels={({ datum }) => datum.y}
+          labelComponent={
+            <VictoryTooltip
+              flyoutStyle={{ strokeWidth: 0 }}
+              style={{
+                fontFamily: 'Titillium Web',
+                fontSize: 10,
+              }}
+            />
+          }
         />
 
         {/* <VictoryBar
@@ -430,14 +478,14 @@ function MonthlyBalanceChart({ areaColor, axisLabelColor }: ChartData) {
 
         <VictoryAxis
           style={{
-            tickLabels: { fill: axisLabelColor },
+            tickLabels: { fill: axisLabelColor, fontFamily: 'Titillium Web', fontSize: 10 },
             axis: { stroke: 'gray' },
           }}
         />
         <VictoryAxis
           dependentAxis
           style={{
-            tickLabels: { fill: axisLabelColor },
+            tickLabels: { fill: axisLabelColor, fontFamily: 'Titillium Web', fontSize: 10 },
             axis: { stroke: 'gray' },
           }}
         />
@@ -471,25 +519,34 @@ function MonthlyEarningsChart({ areaColor, axisLabelColor }: ChartData) {
     <Box>
       <VictoryChart
         height={350}
-        // theme={victoryTheme}
         animate={{ duration: 400, easing: 'bounceIn' }}
-        containerComponent={<VictoryVoronoiContainer labels={({ datum }) => `${datum.y}`} />}
+        containerComponent={<VictoryVoronoiContainer />}
       >
         <VictoryAxis
           style={{
-            tickLabels: { fill: axisLabelColor },
+            tickLabels: { fill: axisLabelColor, fontFamily: 'Titillium Web', fontSize: 10 },
             axis: { stroke: 'gray' },
           }}
         />
         <VictoryAxis
           dependentAxis
           style={{
-            tickLabels: { fill: axisLabelColor },
+            tickLabels: { fill: axisLabelColor, fontFamily: 'Titillium Web', fontSize: 10 },
             axis: { stroke: 'gray' },
           }}
         />
         <VictoryLine
           data={sampleData}
+          labels={({ datum }) => datum.y}
+          labelComponent={
+            <VictoryTooltip
+              flyoutStyle={{ strokeWidth: 0 }}
+              style={{
+                fontFamily: 'Titillium Web',
+                fontSize: 10,
+              }}
+            />
+          }
           style={{
             data: {
               stroke: '#7956DD',

@@ -1,21 +1,29 @@
-import { Heading, Box, Image, Button } from '@chakra-ui/react';
+import { Heading, Box, Image, Button, useColorMode } from '@chakra-ui/react';
 import Link from 'next/link';
 
-function GameCard({ el }) {
-  return (
-    <Link href={'/game/' + el.slug}>
-      <Box cursor="pointer" borderWidth={1} rounded="lg" display="inline-block" position="relative">
-        <Image
-          src="/star-atlas.jpg"
-          height="400px"
-          rounded="lg"
-          objectFit="cover"
-          width="100%"
-        />
+function GameCard({ game }) {
+  const { colorMode } = useColorMode();
 
-        <Box position="absolute" width="100%" p={10} bottom={0}>
-          <Heading color="white" letterSpacing={1}>
-            {el.name}
+  return (
+    <Link href={game.slug ? '/game/' + game.slug : ''}>
+      <Box cursor="pointer" borderWidth={1} rounded="lg" display="inline-block" position="relative">
+        <Image src={game.image} height="400px" rounded="lg" objectFit="cover" width="100%" />
+
+        <Box
+          position="absolute"
+          width="100%"
+          bottom={0}
+          backgroundColor={colorMode === 'light' ? 'white' : '#1a202c'}
+          padding="10px"
+          textAlign="center"
+          roundedBottom="lg"
+        >
+          <Heading
+            fontSize="24px"
+            letterSpacing={1}
+            color={colorMode === 'light' ? 'black' : 'white'}
+          >
+            {game.name}
           </Heading>
         </Box>
       </Box>
